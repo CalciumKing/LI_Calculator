@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainController {
@@ -72,22 +73,71 @@ public class MainController {
 
     @FXML
     private void Equals() {
-        String[] equation = math_label.getText().split("");
-        System.out.println("Length = " + equation.length);
-        System.out.println(Arrays.toString(equation));
-        String[] updated = new String[equation.length];
+        String[] temp = math_label.getText().split("");
+        ArrayList<String> equation = new ArrayList<>(Arrays.asList(temp));
+        System.out.println("Length = " + equation.size());
+//        System.out.println(Arrays.toString(equation));
 
-        int i = 0;
-        while(updated.length > 1) {
-            switch (equation[i].charAt(0)) {
+        int i = 1;
+        int equationLength = equation.size();
+        String firstNum = "";
+        String secondNum = "";
+
+        for(int j = 0; j < equationLength; j++) {
+            if(!equation.get(j).contains("+") &&
+                !equation.get(j).contains("-") &&
+                !equation.get(j).contains("*") &&
+                !equation.get(j).contains("/"))
+                firstNum += equation.get(j);
+            else
+                break;
+        }
+
+        while(equationLength >= 1) {
+/*            for(String s : equation)
+                if(s != null && !s.isEmpty())
+                    equationLength++;
+
+            if(equation[i] == null || equation[i].isEmpty())
+                continue;*/
+
+            System.out.println(equationLength + " Length: " + equation);
+//            for(int j = 0; j < equation.length - 1; j++) {
+//                if(equation[j] != null && !equation[j].isEmpty() && "0123456789".contains(equation[j])) {
+//                    firstNum = equation[j];
+//                    for (int k = j + 1; k < equationLength; k++) {
+//                        if (equation[k] != null && !equation[k].isEmpty() && "0123456789".contains(equation[k])) {
+//                            secondNum = equation[k];
+//                            break;
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
+//            System.out.println("First: " + firstNum + ", Second: " + secondNum);
+
+            switch (equation.get(i).charAt(0)) {
                 case '+':
-                    updated[i] = String.valueOf(Integer.parseInt(equation[i - 1]) + Integer.parseInt(equation[i + 1]));
-                    System.out.println(updated[i]);
-//                    equation[i - 1] = "";
-//                    equation[i] = "";
-//                    equation[i + 1] = "";
+//                    firstNum = String.valueOf(Integer.parseInt(firstNum) + Integer.parseInt(secondNum));
+//                    secondNum = "";
+                    for(int j = i + 1; j < equationLength; j++) {
+                        if(!equation.get(j).contains("+"))
+                            secondNum += equation.get(j);
+                        else
+                            break;
+                    }
+//                    for(int j = i - 1; j >= 0; j--) {
+//                        if(!equation.get(j).contains("+") && !equation.get(j).isEmpty() && equation.get(j) != null) {
+//                            secondNum += equation.get(j) + secondNum;
+//                        }
+//                    }
+
+                    System.out.println(firstNum + " " + secondNum);
+                    equation.remove(equation.get(i - 1));
+                    equation.remove(equation.get(i));
+                    equation.set(i + 1, String.valueOf(Integer.parseInt(firstNum) + Integer.parseInt(secondNum)));
                     break;
-                case '-':
+/*                case '-':
                     updated[i] = String.valueOf(Integer.parseInt(equation[i - 1]) - Integer.parseInt(equation[i + 1]));
                     break;
                 case '*':
@@ -95,15 +145,16 @@ public class MainController {
                     break;
                 case '/':
                     updated[i] = String.valueOf(Integer.parseInt(equation[i - 1]) / Integer.parseInt(equation[i + 1]));
-                    break;
+                    break;*/
             }
+            equationLength -= 2;
             i++;
         }
 
         Clear();
-        for (String s : updated) {
+        for (String s : equation) {
             System.out.println(s);
-            if(s != null)
+            if(s != null && !s.isEmpty())
                 math_label.setText(math_label.getText() + s);
         }
 
